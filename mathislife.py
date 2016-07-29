@@ -115,9 +115,7 @@ epsilon = .1
 delta = epsilon / (8 ** 7)
 T = logit (1 - delta)
 
-V = np.array([720, -720, 0])
-V_prime = restrict_ranges(V, epsilon, delta, T)
-print(V_prime)
+print('Press ESC to quit, any other key to proceed to next step')
 
 # make state vector from grid
 X = from_grid(grid)
