@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 import numpy as np
 import matplotlib.pyplot as plt
+import mathlife
 
 """
 This script was used to generate the charts used in the article, so pretty messy
 """
-
-
-def sigmoid(X):
-  """Calculate sigmoid for vector of values"""
-  return 1 / (1 + np.exp(-X))
 
 def show_two_points_on_line(x1, x2, x1_label = None, x2_label = None):
     if x1_label is None:
@@ -33,6 +29,10 @@ def show_two_points_on_line(x1, x2, x1_label = None, x2_label = None):
     plt.plot([x2], [0], 'ro')
     ax.annotate(x2_label, xy=(x2, .05), textcoords='data')
 
+
+C = mathlife.make_neighbour_matrix(10)
+plt.matshow(C, fignum=123, cmap='Greys_r')
+
 show_two_points_on_line(-6, 0)
 show_two_points_on_line(0, 36)
 show_two_points_on_line(-0.5, 35.5)
@@ -40,7 +40,7 @@ show_two_points_on_line(-10.5, 45.5, '-0.5 - T', '35.5 + T')
 
 # show sigmoid curve with thresholds T
 xs = range(-20, 20)
-ys = [sigmoid(x) for x in xs]
+ys = [mathlife.sigmoid(x) for x in xs]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -51,13 +51,13 @@ plt.axis([-20, 20, -1, 2])
 # Just set T = 10 for now
 T = 10
 
-plt.plot([-T], [sigmoid(-T)], 'ro')
-xy = (-T, sigmoid(-T) + 0.1)
+plt.plot([-T], [mathlife.sigmoid(-T)], 'ro')
+xy = (-T, mathlife.sigmoid(-T) + 0.1)
 ax.annotate('(-T, 0.0 + e)', xy=xy, textcoords='data')
 
 
-plt.plot([T], [sigmoid(T)], 'ro')
-xy = (T, sigmoid(T) + 0.1)
+plt.plot([T], [mathlife.sigmoid(T)], 'ro')
+xy = (T, mathlife.sigmoid(T) + 0.1)
 ax.annotate('(T, 1.0 - e)', xy=xy, textcoords='data')
 
 plt.grid()

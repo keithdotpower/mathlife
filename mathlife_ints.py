@@ -18,21 +18,17 @@ def make_neighbour_matrix(n):
     # these are the values to add to a cell's row and col to get each neighbour (neater than using two loops)
     neighbour_offsets = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
 
-    # Take column vector of nums 1 - K-1 and turn into a matrix so we can read off the neighbours' indices
-    index_mat = np.arange(K).reshape(n, n)
-
     C = np.zeros(shape=(K, K))
-    for r in range(index_mat.shape[0]):
-        for c in range(index_mat.shape[1]):
-            row_num_in_C = r * index_mat.shape[0] + c
+    for r in range(n):
+        for c in range(n):
+            row_num_in_C = r * n + c
 
             # for each cell we want to get the indices for the 8 neighbours and set those columns in the current row to 1
             for offset in neighbour_offsets:
                 nr = (r + offset[1]) % n
                 nc = (c + offset[0]) % n
-                n_index = index_mat[nr][nc]
+                n_index = nr * n + nc
                 C[row_num_in_C][n_index] = 1
-
     return C
 
 
@@ -67,6 +63,7 @@ def handle_key_press(event):
     if event.key == 'escape':
         sys.exit(0)
 
+
 def display(grid):
     # print(grid)
     global fig
@@ -77,32 +74,33 @@ def display(grid):
     plt.show()
 
 
-# define a Toad, Blinker and Glider structure (see https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
-grid = np.array([
-                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0],
-                [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                ])
+if __name__ == '__main__':
+    # define a Toad, Blinker and Glider structure (see https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+    grid = np.array([
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                    ])
 
-n = grid.shape[0] # take n from the grid we defined (assuming square)
-C = make_neighbour_matrix(n)
+    n = grid.shape[0] # take n from the grid we defined (assuming square)
+    C = make_neighbour_matrix(n)
 
-# make state vector from grid
-X = from_grid(grid)
+    # make state vector from grid
+    X = from_grid(grid)
 
-print('Press ESC to quit, any other key to proceed to next step')
+    print('Press ESC to quit, any other key to proceed to next step')
 
-# display state vector as grid and then loop doing updates and displaying them
-display(to_grid(X, n, n))
-
-while True:
-    X = update_cells(X, C)
-    X = restrict_ranges(X)
+    # display state vector as grid and then loop doing updates and displaying them
     display(to_grid(X, n, n))
+
+    while True:
+        X = update_cells(X, C)
+        X = restrict_ranges(X)
+        display(to_grid(X, n, n))
